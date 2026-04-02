@@ -1,0 +1,249 @@
+% ============================================================
+% thesis-main.tex — 北京大学博士学位论文主文件
+% 基于 pkuthss v1.9.4 (2024/03/07) + Word模板精确校正
+%
+% 编译命令（完整流程）：
+%   xelatex thesis-main
+%   biber thesis-main
+%   xelatex thesis-main
+%   xelatex thesis-main
+% 或：latexmk -xelatex thesis-main
+% ============================================================
+
+% ugly 选项：章标题三号(16pt)，小节标题四号(14pt) — 匹配Word模板
+% nopkufont：禁用 unicode-math，避免 amssymb/algorithm2e 冲突
+\documentclass[UTF8, ugly, nopkufont]{pkuthss}
+
+% ============================================================
+% 字体设置（Word模板：正文宋体+Times New Roman；标题黑体）
+% ============================================================
+\usepackage{fontspec}
+\setmainfont{Times New Roman}        % 英文/数字：Times New Roman
+\setsansfont{Arial}                  % 英文无衬线：Arial（ABSTRACT标题用）
+
+% ============================================================
+% 页面尺寸精确校正（对照Word模板实测值）
+% pkuthss ugly 默认：top=3.1cm（应为3.0cm），headsep=0.6cm（应为0.5cm）
+% 关系：header位置 = top - headheight - headsep = 3.0 - 0.5 - 0.5 = 2.0cm ✓
+% ============================================================
+\geometry{top=3.0cm, bottom=2.5cm, headsep=0.5cm, footskip=0.75cm}
+
+% ============================================================
+% 参考文献（GB/T 7714-2015 顺序编码制）
+% ============================================================
+\usepackage[
+  backend = biber,
+  style   = gb7714-2015,
+  sorting = none
+]{biblatex}
+\renewcommand*{\bibfont}{\zihao{5}\linespread{1.27}\selectfont}
+\setlength{\bibitemsep}{3bp}
+\addbibresource{references/references.bib}
+
+% ============================================================
+% 常用宏包
+% ============================================================
+\usepackage{amsmath, amssymb, amsthm}
+\usepackage[ruled, linesnumbered]{algorithm2e}
+\usepackage{booktabs}                % 三线表
+\usepackage{longtable}               % 跨页表格
+
+% ============================================================
+% 标题格式校正（精确匹配Word模板间距）
+%
+% Word模板实测（twips→pt）：
+%   章：before=480/20=24pt, after=360/20=18pt, 单倍行距
+%   一级节(heading 2)：before=480/20=24pt, after=120/20=6pt
+%     （注：pkuthss默认before=20pt，Word实测24pt）
+%   二级节(heading 3)：before=240/20=12pt, after=120/20=6pt
+%   三级节(heading 4)：before=240/20=12pt, after=120/20=6pt
+% ============================================================
+\ctexset{
+  chapter = {
+    beforeskip = 24bp,
+    afterskip  = 18bp plus 0.2ex,
+    format     = {\linespread{1.0}\zihao{3}\bfseries\centering},
+  },
+  section = {
+    beforeskip = 24bp,
+    afterskip  = 6bp plus 0.2ex,
+    format     = {\linespread{1.0}\zihao{4}\bfseries},
+  },
+  subsection = {
+    beforeskip = 12bp plus 1ex minus 0.2ex,
+    afterskip  = 6bp plus 0.2ex,
+    format     = {\linespread{1.0}\fontsize{13bp}{15.6bp}\selectfont\bfseries},
+  },
+  subsubsection = {
+    beforeskip = 12bp plus 1ex minus 0.2ex,
+    afterskip  = 6bp plus 0.2ex,
+    format     = {\linespread{1.0}\zihao{-4}\bfseries},
+  },
+}
+
+% ============================================================
+% 目录格式（章条目：黑体小四；节条目：宋体小四，段前0）
+% ============================================================
+\renewcommand{\cftchapfont}{\heiti}
+\renewcommand{\cftchappagefont}{\heiti}
+\setlength{\cftbeforesecskip}{0pt}
+\setlength{\cftbeforesubsecskip}{0pt}
+
+% ============================================================
+% 英文摘要重定义（Word模板：仅"ABSTRACT"为章标题，不含英文正文题目）
+% pkuthss原始版本在英文摘要页显示英文论文题目+作者信息，不符合北大Word模板
+% ============================================================
+\makeatletter
+\renewenvironment{eabstract}{%
+  \thss@int@pdfmark{\eabstractname}{eabstract}%
+  \chapter*{\sffamily\eabstractname}\markboth{\eabstractname}{}%
+}{%
+  \vfill\noindent\textbf{\label@ekeywords}{\@ekeywords}%
+}
+\makeatother
+
+% 双盲评审开关（盲审版改为 \blindtrue）
+\newif\ifblind\blindfalse
+
+% ============================================================
+% 论文基本信息（TODO：填写实际信息）
+% ============================================================
+\pkuthssinfo{
+  cthesisname  = {博士学位论文},
+  ethesisname  = {Doctor Thesis},
+  thesiscover  = {博士研究生学位论文},
+  % 论文标题（中英文）
+  ctitle       = {论文题目（不超过20字）},
+  etitle       = {Thesis Title in English},
+  % 作者信息
+  cauthor      = {作者姓名},
+  eauthor      = {Author Name},
+  studentid    = {0000000000},
+  % 院系与专业
+  school       = {工学院},
+  cmajor       = {生物医学工程},
+  emajor       = {Biomedical Engineering},
+  direction    = {生物信息学算法开发},
+  % 导师（多位导师用 \\ 换行，mentorlines 相应增加）
+  mentorlines  = {1},
+  cmentor      = {导师姓名~~教授},
+  ementor      = {Prof. Supervisor Name},
+  % 关键词
+  ckeywords    = {关键词1，关键词2，关键词3，关键词4，关键词5},
+  ekeywords    = {Keyword One, Keyword Two, Keyword Three, Keyword Four, Keyword Five},
+  % 日期（三号宋体汉字，如"二〇二五年六月"）
+  date         = {二〇二五年六月},
+  % 学位类型：1=学术学位，2=专业学位
+  degreetype   = {1},
+  % 双盲评审信息（非盲审可忽略）
+  blindid      = {0000000000},
+  discipline   = {生物医学工程},
+}
+
+% ============================================================
+% 文档开始
+% ============================================================
+\begin{document}
+
+% ------ 前置部分（封面、版权、摘要、目录）------
+\frontmatter
+\pagestyle{empty}
+
+% 中文封面（自动生成）
+\ifblind\makeblind\else\maketitle\fi
+
+% 版权声明（正式提交时从研究生院门户打印替换本页，单面打印）
+\cleardoublepage
+\begin{center}
+  \vspace*{8cm}
+  {\zihao{3}\heiti 版权声明}\\[1.5cm]
+  {\zihao{-4}\songti
+    本论文版权归北京大学所有，使用须遵守学校相关规定。\\[0.5cm]
+    （正式提交时请从研究生院门户下载打印版权声明页替换本页）
+  }
+\end{center}
+
+% 摘要与目录（带页眉页脚，罗马数字页码）
+\cleardoublepage
+\pagestyle{plain}
+\pagenumbering{Roman}
+
+% 中文摘要（≥800字，关键词3~5个置底）
+\begin{cabstract}
+  % TODO：填写中文摘要（800-1000字）
+  某某问题是生物信息学领域的重要研究方向。本文针对该问题，提出了……
+
+  本文采用了……方法，主要工作包括：（1）……；（2）……；（3）……
+
+  实验结果表明，本文方法在……数据集上取得了……的性能，较已有方法提升了……
+
+  本研究的主要贡献如下：……
+\end{cabstract}
+
+% 英文摘要（与中文摘要内容一致，ABSTRACT居中三号）
+\begin{eabstract}
+  % TODO：填写英文摘要（内容与中文摘要一致）
+  This thesis focuses on ...
+
+  The main contributions of this work are as follows:
+  (1) ...; (2) ...; (3) ...
+
+  Experimental results demonstrate that the proposed method achieves
+  state-of-the-art performance on ... datasets.
+\end{eabstract}
+
+% 目录（章标题居左黑体小四，节标题缩进宋体小四）
+\tableofcontents
+
+% ============================================================
+% 正文
+% ============================================================
+\mainmatter
+
+\include{chapters/01-introduction/chapter01}
+\include{chapters/02-literature-review/chapter02}
+\include{chapters/03-methods/chapter03}
+\include{chapters/04-experiments/chapter04}
+\include{chapters/05-discussion/chapter05}
+\include{chapters/06-conclusion/chapter06}
+
+% ============================================================
+% 后置部分
+% ============================================================
+
+% 参考文献（五号宋体，行距固定16磅，段前3磅）
+\printbibliography[heading = bibintoc, title = {参考文献}]
+
+% 附录（有则取消注释）
+% \appendix
+% \include{appendices/appendix-a}
+
+\backmatter
+
+% 个人简历与学术成果
+\specialchap{个人简历、在学期间发表的学术论文与研究成果}
+
+\subsection*{个人简历}
+% TODO：填写个人简历
+
+\subsection*{科研成果}
+% TODO：填写发表论文和研究成果（格式同参考文献）
+
+% 致谢
+\ifblind\else
+\specialchap{致\quad 谢}
+% TODO：填写致谢内容（不超过1000字）
+\fi
+
+% 原创性声明（正式提交时从门户打印后附于此处）
+\specialchap{北京大学学位论文原创性声明和使用授权说明}
+{\zihao{-4}\songti
+  本人郑重声明：所呈交的学位论文，是本人在导师的指导下，独立进行研究工作所取得的成果。
+  除文中已经注明引用的内容外，本论文不含任何其他个人或集体已经发表或撰写过的作品成果。
+  对本文的研究做出重要贡献的个人和集体，均已在文中以明确方式标明。
+
+  \vspace{2cm}
+  论文作者签名：\hspace{4cm}日期：\hspace{1cm}年\hspace{0.8cm}月\hspace{0.8cm}日
+}
+
+\end{document}

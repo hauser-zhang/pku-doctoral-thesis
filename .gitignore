@@ -1,0 +1,79 @@
+# ==============================
+# 博士学位论文 .gitignore
+# ==============================
+
+# 学校Word模板原件（版权所有，不上传）
+*.docx
+*.doc
+
+# 个性化AI工作流配置（不纳入开源模板）
+.claude/
+
+# 个人研究笔记
+notes/
+
+# LaTeX 编译产物
+*.aux
+*.bbl
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.lof
+*.log
+*.lot
+*.out
+*.run.xml
+*.synctex.gz
+*.toc
+*.xdv
+*.nav
+*.snm
+*.vrb
+
+# 最终 PDF 输出（用 git-lfs 或单独管理）
+# *.pdf   # 若想跟踪 PDF 请注释此行
+thesis-main.pdf
+
+# 草稿目录（不提交）
+drafts/
+*.draft.*
+
+# 大型数据文件
+data/raw/
+*.fastq
+*.fastq.gz
+*.bam
+*.sam
+*.vcf
+*.bed
+data/
+
+# 环境与密钥
+.env
+.env.*
+secrets/
+
+# 操作系统
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 编辑器
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# 临时文件
+*.tmp
+*.temp
+*.bak
